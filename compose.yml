@@ -2,9 +2,12 @@ services:
   # ── DCGM Exporter ─────────────────────────────────────────────────────────
   # Reads GPU metrics via NVIDIA's Data Center GPU Manager (DCGM) library and
   # exposes them as Prometheus-format text on :9400/metrics.
+  # Ref: https://github.com/NVIDIA/dcgm-exporter
   #
   # The `deploy.resources.reservations.devices` block tells Docker Compose to
   # pass all GPU devices into this container using the NVIDIA runtime.
+  #
+  # Note: `--cap-add SYS_ADMIN` is not included here for now.
   dcgm-exporter:
     image: nvcr.io/nvidia/k8s/dcgm-exporter:4.5.2-4.8.1-ubuntu22.04
     ports:
@@ -16,4 +19,33 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
+    restart: unless-stopped
+
+  # ── Node Exporter ──────────────────────────────────────────────────────────
+  # Exposes host OS metrics (CPU, memory, disk, network, filesystem).
+  # Ref: https://github.com/prometheus/node_exporter
+  #
+  # network_mode: host — the container shares the host network stack directly,
+  #   so node-exporter sees real interface names (eth0, lo, ...) and their stats
+  #   rather than the container's virtual eth0. Also means no port mapping needed;
+  #   :9100 is bound on the host directly.
+  #
+  # pid: host — shares the host PID namespace, enabling per-process collectors
+  #   (e.g. process_open_fds) to see all host processes, not just container ones.
+  #
+  # /:/host:ro,rslave — mounts the entire host root read-only.
+  #   rslave means mount propagation is one-way: new mounts on the host are
+  #   visible inside the container, but not vice versa. --path.rootfs=/host
+  #   tells the binary to treat /host as the filesystem root when collecting
+  #   disk metrics and reading /proc, /sys, etc.
+  #
+  # Note: `--cap-add=SYS_TIME` is not included here for now.
+  node-exporter:
+    image: prom/node-exporter:v1.11.0
+    command:
+      - --path.rootfs=/host
+    network_mode: host
+    pid: host
+    volumes:
+      - /:/host:ro,rslave
     restart: unless-stopped

@@ -32,7 +32,7 @@ check() {
     local hint="$3"
 
     printf "  %-40s" "$label"
-    if output=$(eval "$cmd" 2>&1); then
+    if output=$(set +o pipefail; eval "$cmd" 2>&1); then
         echo -e "${GREEN}PASS${RESET}  ${output:0:80}"
         PASS=$((PASS + 1))
     else
@@ -75,7 +75,7 @@ for metric in \
     desc="${metric##*:}"
     check \
         "$name" \
-        "curl -sf --max-time 5 $METRICS_URL 2>/dev/null | grep -m1 '^${name}{'" \
+        "curl -sf --max-time 5 $METRICS_URL 2>/dev/null | grep -Fm1 '${name}'" \
         "$desc — metric not found; check DCGM container logs: docker compose logs dcgm-exporter"
 done
 

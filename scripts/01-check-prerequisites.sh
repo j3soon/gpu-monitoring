@@ -29,7 +29,7 @@ check() {
     local hint="$3"
 
     printf "  %-30s" "$label"
-    if output=$(eval "$cmd" 2>&1); then
+    if output=$(set +o pipefail; eval "$cmd" 2>&1); then
         echo -e "${GREEN}PASS${RESET}  $output"
         PASS=$((PASS + 1))
     else
