@@ -1,0 +1,14 @@
+# Grafana datasource provisioning
+# Ref: https://grafana.com/docs/grafana/latest/administration/provisioning/#data-sources
+#
+# Provisioning loads this file at startup — no manual UI configuration needed.
+# The datasource is marked as default so dashboards don't need to specify it.
+
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    url: http://prometheus:9090
+    isDefault: true
+    editable: false
