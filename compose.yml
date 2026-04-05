@@ -1,0 +1,19 @@
+services:
+  # ── DCGM Exporter ─────────────────────────────────────────────────────────
+  # Reads GPU metrics via NVIDIA's Data Center GPU Manager (DCGM) library and
+  # exposes them as Prometheus-format text on :9400/metrics.
+  #
+  # The `deploy.resources.reservations.devices` block tells Docker Compose to
+  # pass all GPU devices into this container using the NVIDIA runtime.
+  dcgm-exporter:
+    image: nvcr.io/nvidia/k8s/dcgm-exporter:4.5.2-4.8.1-ubuntu22.04
+    ports:
+      - "9400:9400"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    restart: unless-stopped
