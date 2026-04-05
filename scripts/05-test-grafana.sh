@@ -35,7 +35,7 @@ check() {
     fi
 }
 
-GRAFANA_URL="http://localhost:3000"
+GRAFANA_URL="http://localhost:33000"
 AUTH="admin:admin"
 
 echo ""
@@ -51,7 +51,7 @@ check \
 echo ""
 echo -e "${BOLD}HTTP Endpoint${RESET}"
 check \
-    ":3000 reachable" \
+    ":33000 reachable" \
     "curl -sf --max-time 10 '$GRAFANA_URL/api/health' | grep -q 'ok'" \
     "Container may still be starting — wait a few seconds and retry"
 

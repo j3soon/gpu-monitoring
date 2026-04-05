@@ -9,7 +9,7 @@ Prometheus + Grafana monitoring for NVIDIA GPUs and host system metrics, running
 | dcgm-exporter | nvcr.io/nvidia/k8s/dcgm-exporter | 9400 | NVIDIA GPU metrics |
 | node-exporter | prom/node-exporter | 9100 | Host CPU / memory / disk / network |
 | prometheus | prom/prometheus | 9090 | Metrics storage and querying |
-| grafana | grafana/grafana | 3000 | Dashboards *(Step 5)* |
+| grafana | grafana/grafana | 33000 | Dashboards *(changed from default 3000 to avoid conflicts with dev servers)* |
 
 ## Prerequisites
 

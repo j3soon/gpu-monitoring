@@ -35,7 +35,7 @@ check() {
     fi
 }
 
-GRAFANA_URL="http://localhost:3000"
+GRAFANA_URL="http://localhost:33000"
 AUTH="admin:admin"
 
 echo ""
