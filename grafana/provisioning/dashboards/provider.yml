@@ -1,0 +1,14 @@
+# Grafana dashboard provider
+# Ref: https://grafana.com/docs/grafana/latest/administration/provisioning/#dashboards
+#
+# Tells Grafana to watch a directory for JSON dashboard files and load them at
+# startup. Any JSON file dropped into grafana/dashboards/ is picked up
+# automatically — no UI import needed.
+
+apiVersion: 1
+
+providers:
+  - name: default
+    type: file
+    options:
+      path: /var/lib/grafana/dashboards
