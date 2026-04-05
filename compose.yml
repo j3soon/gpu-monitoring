@@ -10,6 +10,12 @@ services:
   # Note: `--cap-add SYS_ADMIN` is not included here for now.
   dcgm-exporter:
     image: nvcr.io/nvidia/k8s/dcgm-exporter:4.5.2-4.8.1-ubuntu22.04
+    command:
+      # -c sets the collection interval in milliseconds (default: 30000).
+      # Set to 15000 to match Prometheus scrape_interval.
+      # Ref: https://docs.nvidia.com/datacenter/dcgm/latest/gpu-telemetry/dcgm-exporter.html
+      - -c
+      - "15000"
     ports:
       - "9400:9400"
     deploy:
@@ -48,4 +54,30 @@ services:
     pid: host
     volumes:
       - /:/host:ro,rslave
+    restart: unless-stopped
+
+  # ── Prometheus ────────────────────────────────────────────────────────────
+  # Scrapes /metrics from all exporters on a schedule and stores them as
+  # time-series in its local TSDB (time-series database).
+  # Ref: https://prometheus.io/docs/prometheus/latest/installation/
+  #
+  # Default paths in the image:
+  #   config  → /etc/prometheus/prometheus.yml
+  #   data    → /prometheus
+  # ./prometheus/data is a bind mount so TSDB blocks are visible on disk.
+  prometheus:
+    image: prom/prometheus:v3.11.0
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/data:/prometheus
+    # node-exporter uses network_mode: host, which takes it off the Docker bridge
+    # entirely — Docker DNS cannot resolve it by service name from here.
+    # extra_hosts injects the host's bridge gateway IP as "host.docker.internal",
+    # giving Prometheus a routable address to reach port 9100 on the host network.
+    # network_mode: host and networks: are mutually exclusive in Docker, so a
+    # shared custom network is not an option.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     restart: unless-stopped
