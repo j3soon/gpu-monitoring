@@ -61,10 +61,19 @@ scrape_configs:
       module: [http_2xx]
     static_configs:
       - targets:
-          - https://github.com
+          - https://github.com                     # git push/pull (HTTPS)
           - https://objects.githubusercontent.com  # git pack files + release binary downloads
-          - https://google.com
-          - https://cloudflare.com
+          - https://google.com                     # general internet reachability
+          - https://cloudflare.com                 # general internet reachability
+          - http://archive.ubuntu.com              # apt packages
+          - http://tw.archive.ubuntu.com           # apt packages (Taiwan mirror)
+          - http://security.ubuntu.com             # apt security updates
+          - https://youtube.com                    # video streaming
+          - https://arxiv.org                      # research papers
+          - https://facebook.com                   # social media
+          - https://microsoft.com                  # general Microsoft reachability
+          - https://onedrive.live.com              # OneDrive web + sync client
+          - https://storage.live.com               # OneDrive file blob storage (upload/download bottleneck)
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
@@ -82,8 +91,8 @@ scrape_configs:
       module: [http_get_any]
     static_configs:
       - targets:
-          - https://registry-1.docker.io
-          - https://production.cloudflare.docker.com
+          - https://registry-1.docker.io                  # Docker Hub registry (manifest + layer metadata)
+          - https://production.cloudflare.docker.com      # Cloudflare CDN serving image layer blobs
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
