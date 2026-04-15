@@ -1,0 +1,24 @@
+# Blackbox Exporter probe module definitions.
+# Ref: https://github.com/prometheus/blackbox_exporter/blob/master/CONFIGURATION.md
+# Ref: https://github.com/prometheus/blackbox_exporter/blob/master/blackbox.yml
+#
+# Each module defines a prober (http, icmp, tcp, dns) and its parameters.
+# Prometheus selects the module per scrape job via ?module=<name>.
+
+modules:
+
+  # ── HTTP ──────────────────────────────────────────────────────────────────
+  # Probes an HTTP/HTTPS endpoint and checks for a 2xx response.
+  # Measures DNS lookup, TCP connect, TLS handshake, and TTFB individually.
+  http_2xx:
+    prober: http
+    http:
+      preferred_ip_protocol: ip4
+
+  # ── ICMP (ping) ───────────────────────────────────────────────────────────
+  # Sends ICMP echo requests and measures round-trip latency and packet loss.
+  # Requires NET_RAW capability (set in compose.yml).
+  icmp:
+    prober: icmp
+    icmp:
+      preferred_ip_protocol: ip4
