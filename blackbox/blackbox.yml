@@ -15,6 +15,16 @@ modules:
     http:
       preferred_ip_protocol: ip4
 
+  # ── HTTP (any status) ────────────────────────────────────────────────────
+  # Like http_2xx but accepts any HTTP response code.
+  # Useful for endpoints (e.g. Docker registry, auth services) that return
+  # 4xx/5xx on plain GET but still prove the host is reachable and responding.
+  http_get_any:
+    prober: http
+    http:
+      valid_status_codes: []  # empty = accept any status code
+      preferred_ip_protocol: ip4
+
   # ── ICMP (ping) ───────────────────────────────────────────────────────────
   # Sends ICMP echo requests and measures round-trip latency and packet loss.
   # Requires NET_RAW capability (set in compose.yml).

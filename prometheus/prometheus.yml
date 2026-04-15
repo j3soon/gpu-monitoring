@@ -62,8 +62,28 @@ scrape_configs:
     static_configs:
       - targets:
           - https://github.com
+          - https://objects.githubusercontent.com  # git pack files + release binary downloads
           - https://google.com
           - https://cloudflare.com
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115
+
+  # ── Blackbox Exporter — HTTP probes (any status) ────────────────────────
+  # For endpoints that return non-2xx on plain GET but still prove reachability.
+  # probe_success=1 means the host responded; status code is not checked.
+  - job_name: blackbox-http-any
+    metrics_path: /probe
+    params:
+      module: [http_get_any]
+    static_configs:
+      - targets:
+          - https://registry-1.docker.io
+          - https://production.cloudflare.docker.com
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
