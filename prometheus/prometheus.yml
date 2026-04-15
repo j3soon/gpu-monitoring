@@ -62,6 +62,8 @@ scrape_configs:
     static_configs:
       - targets:
           - https://github.com
+          - https://google.com
+          - https://cloudflare.com
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
@@ -71,14 +73,21 @@ scrape_configs:
         replacement: blackbox-exporter:9115
 
   # ── Blackbox Exporter — ICMP probes ──────────────────────────────────────
+  # Pings DNS resolvers and well-known hosts to detect general network issues.
   - job_name: blackbox-icmp
     metrics_path: /probe
     params:
       module: [icmp]
     static_configs:
       - targets:
+          # DNS resolvers — fast, reliable ICMP responders worldwide
+          - 8.8.8.8      # Google DNS primary
+          - 8.8.4.4      # Google DNS secondary
+          - 1.1.1.1      # Cloudflare DNS primary
+          - 1.0.0.1      # Cloudflare DNS secondary
+          # Common infra
           - github.com
-          - 8.8.8.8
+          - google.com
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
