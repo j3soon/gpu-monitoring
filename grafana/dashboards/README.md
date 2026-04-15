@@ -15,3 +15,12 @@ curl -sf https://raw.githubusercontent.com/NVIDIA/dcgm-exporter/main/grafana/dcg
 curl -sf https://grafana.com/api/dashboards/1860/revisions/latest/download  -o node-exporter.json
 curl -sf https://grafana.com/api/dashboards/7587/revisions/latest/download  -o blackbox.json
 ```
+
+## Patching
+
+`blackbox.json` uses `${DS_SIGNCL-PROMETHEUS}` (`__inputs__` variable), which Grafana file
+provisioning never resolves ([grafana#10786](https://github.com/grafana/grafana/issues/10786)).
+Fix: replace with `$datasource` and add a `datasource` template variable.
+`dcgm.json` and `node-exporter.json` already use proper template variables — no patching needed.
+
+> Vibe fixed by [Claude Code](https://claude.ai/code).
