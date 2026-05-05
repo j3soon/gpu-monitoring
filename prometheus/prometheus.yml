@@ -74,6 +74,7 @@ scrape_configs:
           - https://microsoft.com                  # general Microsoft reachability
           - https://onedrive.live.com              # OneDrive web + sync client
           - https://storage.live.com               # OneDrive file blob storage (upload/download bottleneck)
+          - https://store.steampowered.com         # Steam store
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
