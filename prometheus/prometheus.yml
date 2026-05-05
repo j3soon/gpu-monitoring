@@ -56,6 +56,8 @@ scrape_configs:
   # calls blackbox-exporter:9115/probe?target=<url>&module=http_2xx, then
   # sets the `instance` label to the probed URL for readable dashboards.
   - job_name: blackbox-http
+    scrape_interval: 1m
+    scrape_timeout: 10s
     metrics_path: /probe
     params:
       module: [http_2xx]
@@ -87,6 +89,8 @@ scrape_configs:
   # For endpoints that return non-2xx on plain GET but still prove reachability.
   # probe_success=1 means the host responded; status code is not checked.
   - job_name: blackbox-http-any
+    scrape_interval: 1m
+    scrape_timeout: 10s
     metrics_path: /probe
     params:
       module: [http_get_any]
@@ -105,6 +109,8 @@ scrape_configs:
   # ── Blackbox Exporter — ICMP probes ──────────────────────────────────────
   # Pings DNS resolvers and well-known hosts to detect general network issues.
   - job_name: blackbox-icmp
+    scrape_interval: 1m
+    scrape_timeout: 10s
     metrics_path: /probe
     params:
       module: [icmp]
